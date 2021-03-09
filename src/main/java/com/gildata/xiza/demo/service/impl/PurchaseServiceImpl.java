@@ -14,17 +14,28 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
+import java.util.Objects;
+
+import static com.gildata.xiza.demo.constant.CommonConstants.PRODUCT_SCHEDULE_SET;
+import static com.gildata.xiza.demo.constant.CommonConstants.PURCHASE_PRODUCT_LIST;
 
 /**
- * @author paragon
+ * @description Purchase对应的service层实现
+ * @author xiza@gildata.comgon
+ * @date 2021/3/9
  */
 @Service
 public class PurchaseServiceImpl implements PurchaseService {
 
     @Autowired
-    private ProductDao productDao = null;
+    private ProductDao productDao;
     @Autowired
-    private PurchaseRecordDao purchaseRecordDao = null;
+    public PurchaseRecordDao purchaseRecordDao;
+
+    /**
+     * 32位SHA1编码，第一次执行的时候先让Redis进行缓存脚本返回
+     */
+    private String sha1 = null;
 
     @Override
     /**
@@ -102,20 +113,6 @@ public class PurchaseServiceImpl implements PurchaseService {
                     // 返回成功
                     + "return 1 \n";
 
-    /**
-     * Redis购买记录集合前缀
-     */
-    private static final String PURCHASE_PRODUCT_LIST = "purchase_list_";
-
-    /**
-     * 抢购商品集合
-     */
-    private static final String PRODUCT_SCHEDULE_SET = "product_schedule_set";
-
-    /**
-     * 32位SHA1编码，第一次执行的时候先让Redis进行缓存脚本返回
-     */
-    private String sha1 = null;
 
     @Override
     public boolean purchaseRedis(Long userId, Long productId, int quantity) {
@@ -124,8 +121,8 @@ public class PurchaseServiceImpl implements PurchaseService {
         Jedis jedis = null;
         try {
             //获取原始连接
-            jedis = (Jedis) stringRedisTemplate
-                    .getConnectionFactory().getConnection().getNativeConnection();
+            jedis = (Jedis) Objects.requireNonNull(stringRedisTemplate
+                    .getConnectionFactory()).getConnection().getNativeConnection();
             //如果没有加载过，则先将脚本加载到Redis服务器，让其返回sha1
             if (sha1 == null) {
                 sha1 = jedis.scriptLoad(purchaseScript);

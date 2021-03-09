@@ -5,7 +5,9 @@ import com.gildata.xiza.demo.pojo.PurchaseRecordPo;
 import java.util.List;
 
 /**
- * @author paragon
+ * @description Purchase对应的service层
+ * @author xiza@gildata.comgon
+ * @date 2021/3/9
  */
 public interface PurchaseService {
     /**

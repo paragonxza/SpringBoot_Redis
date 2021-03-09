@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * @author paragon
+ * @description 购买业务控制层
+ * @author xiza@gildata.com
+ * @date 2021/3/9
  */
 @RestController
 public class PurchaseController {
@@ -26,15 +28,6 @@ public class PurchaseController {
         ModelAndView mv = new ModelAndView("test");
         return mv;
     }
-
-//    @PostMapping("/purchase")
-//    public Result purchase(Long userId, Long productId, Integer quantity){
-//        采用CAS自旋保证稳定性
-//        boolean success = purchaseService.purchase(userId, productId, quantity);
-//        String message = success? "抢购成功":"抢购失败";
-//        Result result = new Result(success, message);
-//        return result;
-//    }
 
     /**
      * 响应jsp post提交请求

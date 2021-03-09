@@ -19,9 +19,4 @@
 		where id = #{id}
 	</update>
 
-<!--
-where id=#{id} for update 悲观锁解决
-where id = #{id} and version = #{version} 添加版本号CAS实现
--->
-
 </mapper>

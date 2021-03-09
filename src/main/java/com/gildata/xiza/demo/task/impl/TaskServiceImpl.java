@@ -1,5 +1,6 @@
 package com.gildata.xiza.demo.task.impl;
 
+import com.gildata.xiza.demo.constant.CommonConstants;
 import com.gildata.xiza.demo.pojo.PurchaseRecordPo;
 import com.gildata.xiza.demo.service.PurchaseService;
 import com.gildata.xiza.demo.task.TaskService;
@@ -13,8 +14,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static com.gildata.xiza.demo.constant.CommonConstants.ONE_TIME_SIZE;
+import static com.gildata.xiza.demo.constant.CommonConstants.PRODUCT_SCHEDULE_SET;
+
 /**
- * @author paragon
+ * @description Task对应的service层实现
+ * @author xiza@gildata.comgon
+ * @date 2021/3/9
  */
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -22,21 +29,9 @@ public class TaskServiceImpl implements TaskService {
     private StringRedisTemplate stringRedisTemplate = null;
     @Autowired
     private PurchaseService purchaseService = null;
-    /**
-     *  定义定时调度任务的Set集合
-     */
-    private static final String PRODUCT_SCHEDULE_SET = "product_schedule_set";
-    /**
-     *  定义Redis缓存存放的购买产品List列表
-     */
-    private static final String PURCHASE_PRODUCT_LIST = "purchase_list_";
-    /**
-     *  每次取出1000条，避免一次取出消耗太多内存
-     */
-    private static final int ONE_TIME_SIZE = 1000;
+
 
     @Override
-    //
     /**
      * 每天半夜1点钟开始执行任务
      */
@@ -52,7 +47,7 @@ public class TaskServiceImpl implements TaskService {
         List<PurchaseRecordPo> prpList =new ArrayList<>();
         for (String productIdStr : productIdList) {
             Long productId = Long.parseLong(productIdStr);
-            String purchaseKey = PURCHASE_PRODUCT_LIST + productId;
+            String purchaseKey = CommonConstants.PURCHASE_PRODUCT_LIST + productId;
             BoundListOperations<String, String> ops = stringRedisTemplate.boundListOps(purchaseKey);
             // 计算记录数
             long size = stringRedisTemplate.opsForList().size(purchaseKey);

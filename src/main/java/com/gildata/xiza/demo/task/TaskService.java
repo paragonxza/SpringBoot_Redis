@@ -1,7 +1,9 @@
 package com.gildata.xiza.demo.task;
 
 /**
- * @author xiza
+ * @description Task对应的service层
+ * @author xiza@gildata.comgon
+ * @date 2021/3/9
  */
 public interface TaskService {
     /**

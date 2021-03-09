@@ -6,7 +6,9 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 /**
- * @author paragon
+ * @description Product对应的dao层
+ * @author xiza@gildata.com
+ * @date 2021/3/8
  */
 @Mapper
 @Component("productDao")
