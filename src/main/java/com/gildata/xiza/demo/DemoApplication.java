@@ -1,4 +1,4 @@
-package main;
+package com.gildata.xiza.demo;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
