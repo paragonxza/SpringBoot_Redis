@@ -1,0 +1,23 @@
+create table T_PURCHASE_RECORD
+(
+id int(12) NOT NULL AUTO_INCREMENT COMMENT '编号',
+user_id int(12) NOT NULL COMMENT '用户编号',
+product_id int(12) NOT NULL COMMENT '产品编号',
+price  DECIMAL(16,2) NOT NULL COMMENT '价格',
+quantity INT(12) NOT NULL COMMENT '数量',
+sum DECIMAL(16,2) NOT NULL COMMENT '总价',
+purchase_date TIMESTAMP NOT NULL DEFAULT NOW() COMMENT '购买日期',
+note VARCHAR(256) NULL COMMENT '备注',
+PRIMARY KEY(id)
+);
+
+create table T_Product
+(
+id int(12) NOT NULL AUTO_INCREMENT COMMENT '编号',
+product_name VARCHAR(60) NOT NULL COMMENT '产品名称',
+stock INT(10)  NOT NULL COMMENT '库存',
+price  DECIMAL(16,2) NOT NULL COMMENT '单价',
+version INT(10) NOT NULL DEFAULT 0 COMMENT '版本号',
+note VARCHAR(256) NULL COMMENT '备注',
+PRIMARY KEY(id)
+);
