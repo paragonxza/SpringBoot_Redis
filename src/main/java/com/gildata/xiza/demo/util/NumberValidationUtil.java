@@ -37,7 +37,6 @@ public class NumberValidationUtil {
          * 正整数[1,MAX)
          *
          * @param original
-         * @Description: 是否为正整数
          * @return boolean
          */
         public static boolean isPositiveInteger(String original) {
@@ -109,7 +108,6 @@ public class NumberValidationUtil {
          *
          * @param original
          * @return boolean
-         * @date 2021/2/18 14:21
          */
         public static boolean isRealNumberPercent(String original) { return isMatch(REGEX_REAL_NUMBER_PERCENT, original); }
 

@@ -21,69 +21,68 @@ import java.util.Objects;
 @Slf4j
 public class RcLog {
 
-  private static Logger eslog = LogManager.getLogger("ESLogger");
-  private static com.gildata.xiza.demo.util.RequestUtil RequestUtil;
+    private static final Logger eslog = LogManager.getLogger("ESLogger");
+    private static com.gildata.xiza.demo.util.RequestUtil RequestUtil;
 
-  public static void info(Object msg) {
-    info(msg, null);
-  }
-
-  public static void error(Object msg) {
-    error(msg, null);
-  }
-
-  public static void error(Object msg, Throwable e) {
-    error(msg, null, e);
-  }
-
-  public static void warn(Object msg) {
-    warn(msg, null);
-  }
-
-  public static void info(Object msg, String module) {
-    eslog.info(build(msg, module));
-  }
-
-  public static void error(Object msg, String module, Throwable e) {
-    String str = build(msg, module, e);
-    eslog.error(lineHandle(str));
-    log.error(System.currentTimeMillis() + "", e);
-  }
-
-  public static void warn(Object msg, String module) {
-    String str = build(msg, module);
-    eslog.warn(lineHandle(str));
-  }
-
-  public static String lineHandle(String json) {
-    try {
-      json = json.replaceAll(System.lineSeparator(), "\t")
-          + System.lineSeparator();
-    } catch (Exception e) {
-      return e.getMessage();
+    public static void info(Object msg) {
+      info(msg, null);
     }
-    return json;
-  }
 
-  public static String build(Object msg, String module) {
-    return build(msg, module, null);
-  }
-
-  public static String build(Object msg, String module, Throwable e) {
-    RcLogMsg logMsg = RcLogMsg.builder()
-        .msg(msg instanceof String ? msg : JSON.toJSONString(msg))
-        .module(module)
-        .time(System.currentTimeMillis())
-        .exception(Objects.isNull(e) ? null : ExceptionUtils.getStackTrace(e))
-        .build();
-    try {
-      HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-      logMsg.setUri(request.getRequestURI());
-      logMsg.setIp(com.gildata.xiza.demo.util.RequestUtil.getIp());
-      logMsg.setSource(request.getHeader("source"));
-    } catch (Exception ex) {
+    public static void error(Object msg) {
+      error(msg, null);
     }
-    return JSON.toJSONString(logMsg);
-  }
+
+    public static void error(Object msg, Throwable e) {
+      error(msg, null, e);
+    }
+
+    public static void warn(Object msg) {
+      warn(msg, null);
+    }
+
+    public static void info(Object msg, String module) {
+      eslog.info(build(msg, module));
+    }
+
+    public static void error(Object msg, String module, Throwable e) {
+        String str = build(msg, module, e);
+        eslog.error(lineHandle(str));
+        log.error(System.currentTimeMillis() + "", e);
+    }
+
+    public static void warn(Object msg, String module) {
+        String str = build(msg, module);
+        eslog.warn(lineHandle(str));
+    }
+
+    public static String lineHandle(String json) {
+        try {
+          json = json.replaceAll(System.lineSeparator(), "\t")
+              + System.lineSeparator();
+        } catch (Exception e) {
+          return e.getMessage();
+        }
+        return json;
+    }
+
+    public static String build(Object msg, String module) {
+      return build(msg, module, null);
+    }
+
+    public static String build(Object msg, String module, Throwable e) {
+        RcLogMsg logMsg = RcLogMsg.builder()
+            .msg(msg instanceof String ? msg : JSON.toJSONString(msg))
+            .module(module)
+            .time(System.currentTimeMillis())
+            .exception(Objects.isNull(e) ? null : ExceptionUtils.getStackTrace(e))
+            .build();
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+            logMsg.setUri(request.getRequestURI());
+            logMsg.setIp(com.gildata.xiza.demo.util.RequestUtil.getIp());
+            logMsg.setSource(request.getHeader("source"));
+        } catch (Exception ignored) { }
+        return JSON.toJSONString(logMsg);
+    }
 
 }

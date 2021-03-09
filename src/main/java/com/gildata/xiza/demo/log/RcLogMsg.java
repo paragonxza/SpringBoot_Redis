@@ -18,39 +18,39 @@ import lombok.NoArgsConstructor;
 @JSONType(orders = {"time", "uri", "source", "module", "msg", "ip", "exception"})
 public class RcLogMsg {
 
-  /**
-   *消息
-   */
-  private Object msg;
+    /**
+     *消息
+     */
+    private Object msg;
 
-  /**
-   *来源
-   */
-  private String source;
+    /**
+     *来源
+     */
+    private String source;
 
-  /**
-   *模型
-   */
-  private String module;
+    /**
+     *模型
+     */
+    private String module;
 
-  /**
-   *时间
-   */
-  private Long time;
+    /**
+     *时间
+     */
+    private Long time;
 
-  /**
-   *ip地址
-   */
-  private String ip;
+    /**
+     *ip地址
+     */
+    private String ip;
 
-  /**
-   *uri
-   */
-  private String uri;
+    /**
+     *uri
+     */
+    private String uri;
 
-  /**
-   *异常
-   */
-  private String exception;
+    /**
+     *异常
+     */
+    private String exception;
 
 }

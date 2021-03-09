@@ -15,7 +15,7 @@ import java.util.Date;
 @Slf4j
 public class DateUtil {
 
-    private static DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateFormat DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 根据字符串解析时间
@@ -25,8 +25,7 @@ public class DateUtil {
      */
     public static Date getTime(String time) throws ParseException {
         try {
-            Date date = dateFormat2.parse(time);
-            return date;
+            return DATE_FORMAT2.parse(time);
         }catch (ParseException e){
             log.error("日期解析错误：",e);
             return null;
