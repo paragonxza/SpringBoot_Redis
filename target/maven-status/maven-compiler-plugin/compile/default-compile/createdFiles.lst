@@ -1,0 +1,9 @@
+com/gildata/xiza/demo/DemoApplication.class
+com/gildata/xiza/demo/service/impl/PurchaseServiceImpl.class
+com/gildata/xiza/demo/pojo/ProductPo.class
+com/gildata/xiza/demo/dao/ProductDao.class
+com/gildata/xiza/demo/controller/PurchaseController$Result.class
+com/gildata/xiza/demo/controller/PurchaseController.class
+com/gildata/xiza/demo/service/PurchaseService.class
+com/gildata/xiza/demo/dao/PurchaseRecordDao.class
+com/gildata/xiza/demo/pojo/PurchaseRecordPo.class
