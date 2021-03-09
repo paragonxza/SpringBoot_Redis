@@ -11,11 +11,16 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component("productDao")
 public interface ProductDao {
-    //获取产品
+
+    /**
+     * 获取产品
+     * @param id 编号
+     * @return ProductPO 产品po
+     */
     public ProductPo getProduct(Long id);
 
     /**
-     * 减库存，param标明的mybatis参数传递给后台，不采用cas
+     * 减库存，param标明的mybatis参数传递给后台，不采用cas,改用redis缓存实现
      * @param id 编号
      * @param quantity 购买数量
      * @return int

@@ -19,7 +19,9 @@ public class PurchaseRecordPo implements Serializable {
     private double price;
     private int quantity;
     private double sum;
-    //添加时间戳
+    /**
+     * 添加时间戳
+     */
     private Timestamp purchaseTime;
     private String note;
 }

@@ -26,10 +26,11 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Autowired
     private PurchaseRecordDao purchaseRecordDao = null;
 
-
     @Override
-    //启用Spring数据库事务机制
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    /**
+     * 启用Spring数据库事务机制
+     */
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public boolean purchase(Long userId, Long productId, int quantity) {
         //localtime
         long start = System.currentTimeMillis();
@@ -50,7 +51,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 
             //添加版本号采用CAS实现乐观锁
             //获取当前版本号
-            int version = product.getVersion();
+            //int version = product.getVersion();
             //扣减库存，同时将当前版本号发送给后台进行比对
             int result = productDao.decreaseProduct(productId, quantity);
             //如果更新数据失败，则说明数据在多线程中被其他线程修改，导致失败返回
@@ -100,41 +101,52 @@ public class PurchaseServiceImpl implements PurchaseService {
                     + "redis.call('rpush', productPurchaseList, purchaseRecord) \n"
                     // 返回成功
                     + "return 1 \n";
-    // Redis购买记录集合前缀
+
+    /**
+     * Redis购买记录集合前缀
+     */
     private static final String PURCHASE_PRODUCT_LIST = "purchase_list_";
-    // 抢购商品集合
+
+    /**
+     * 抢购商品集合
+     */
     private static final String PRODUCT_SCHEDULE_SET = "product_schedule_set";
-    // 32位SHA1编码，第一次执行的时候先让Redis进行缓存脚本返回
+
+    /**
+     * 32位SHA1编码，第一次执行的时候先让Redis进行缓存脚本返回
+     */
     private String sha1 = null;
 
     @Override
     public boolean purchaseRedis(Long userId, Long productId, int quantity) {
-        // 购买时间
+        //购买时间
         Long purchaseDate = System.currentTimeMillis();
         Jedis jedis = null;
         try {
-            // 获取原始连接
+            //获取原始连接
             jedis = (Jedis) stringRedisTemplate
                     .getConnectionFactory().getConnection().getNativeConnection();
-            // 如果没有加载过，则先将脚本加载到Redis服务器，让其返回sha1
+            //如果没有加载过，则先将脚本加载到Redis服务器，让其返回sha1
             if (sha1 == null) {
                 sha1 = jedis.scriptLoad(purchaseScript);
             }
-            // 执行脚本，返回结果
+            //执行脚本，返回结果
             Object res = jedis.evalsha(sha1, 2, PRODUCT_SCHEDULE_SET,
                     PURCHASE_PRODUCT_LIST, userId + "", productId + "",
                     quantity + "", purchaseDate + "");
             Long result = (Long) res;
             return result == 1;
         } finally {
-            // 关闭jedis连接
+            //关闭jedis连接
             if (jedis != null && jedis.isConnected()) {
                 jedis.close();
             }
         }
     }
 
-    //初始化购买信息
+    /**
+     * 初始化购买信息
+     */
     private PurchaseRecordPo initPurchaseRecord(Long userId, ProductPo product, int quantity){
         PurchaseRecordPo pr = new PurchaseRecordPo();
         pr.setNote("购买日志，时间：" + System.currentTimeMillis());
@@ -147,9 +159,11 @@ public class PurchaseServiceImpl implements PurchaseService {
         return pr;
     }
 
+    /**
+     * 当运行方法启用新的独立事务运行
+     */
     @Override
-    // 当运行方法启用新的独立事务运行
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public boolean dealRedisPurchase(List<PurchaseRecordPo> prpList) {
         for (PurchaseRecordPo prp : prpList) {
             purchaseRecordDao.insertPurchaseRecord(prp);

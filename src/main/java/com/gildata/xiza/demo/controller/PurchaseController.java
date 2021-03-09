@@ -18,7 +18,9 @@ public class PurchaseController {
     @Autowired
     PurchaseService purchaseService = null;
 
-    //定义Jsp视图
+    /**
+     * 定义Jsp视图
+     */
     @GetMapping("/test")
     public ModelAndView testPage(){
         ModelAndView mv = new ModelAndView("test");
@@ -27,19 +29,24 @@ public class PurchaseController {
 
 //    @PostMapping("/purchase")
 //    public Result purchase(Long userId, Long productId, Integer quantity){
+//        采用CAS自旋保证稳定性
 //        boolean success = purchaseService.purchase(userId, productId, quantity);
 //        String message = success? "抢购成功":"抢购失败";
 //        Result result = new Result(success, message);
 //        return result;
 //    }
+
+    /**
+     * 响应jsp post提交请求
+     */
     @PostMapping("/purchase")
     public Result purchase(Long userId, Long productId, Integer quantity) {
+        // 采用redis缓存保证高并发的稳定性
         boolean success = purchaseService.purchaseRedis(userId, productId, quantity);
         String message = success ? "抢购成功" : "抢购失败";
         Result result = new Result(success, message);
         return result;
     }
-
 
     /**
      * Result响应结果类

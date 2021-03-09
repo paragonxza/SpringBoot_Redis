@@ -6,6 +6,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+/**
+ * @author xiza
+ */
 @SpringBootApplication(scanBasePackages = "com.gildata.xiza.demo")
 @MapperScan(annotationClass = Mapper.class, basePackages = "com.gildata.xiza.demo")
 @EnableScheduling

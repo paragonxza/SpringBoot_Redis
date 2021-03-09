@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gildata.xiza.demo.dao.ProductDao">
+
     <!-- 获取产品 -->
     <select id="getProduct" parameterType="long" resultType="product">
 		select id, product_name as productName,
@@ -17,8 +18,10 @@
 		version = version +1
 		where id = #{id}
 	</update>
+
 <!--
 where id=#{id} for update 悲观锁解决
-where id = #{id} and version = #{version}
+where id = #{id} and version = #{version} 添加版本号CAS实现
 -->
+
 </mapper>

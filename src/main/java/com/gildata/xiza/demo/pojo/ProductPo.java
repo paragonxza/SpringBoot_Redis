@@ -16,7 +16,9 @@ public class ProductPo implements Serializable {
     private String productName;
     private int stock;
     private double price;
-    //新增版本号实现CAS
+    /**
+     * 采用版本号控制实现CAS
+     */
     private int version;
     private String note;
 }

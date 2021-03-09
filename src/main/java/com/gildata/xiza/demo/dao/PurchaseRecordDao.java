@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 @Component("purchaseRecordDao")
 public interface PurchaseRecordDao {
 
-    //插入购买记录
+    /**
+     * 插入购买记录
+     * @param pr 购买记录po
+     * @return int
+     */
     public int insertPurchaseRecord(PurchaseRecordPo pr);
 }

@@ -13,33 +13,47 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+/**
+ * @author paragon
+ */
 @Service
 public class TaskServiceImpl implements TaskService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate = null;
     @Autowired
     private PurchaseService purchaseService = null;
-
+    /**
+     *  定义定时调度任务的Set集合
+     */
     private static final String PRODUCT_SCHEDULE_SET = "product_schedule_set";
+    /**
+     *  定义Redis缓存存放的购买产品List列表
+     */
     private static final String PURCHASE_PRODUCT_LIST = "purchase_list_";
-    // 每次取出1000条，避免一次取出消耗太多内存
+    /**
+     *  每次取出1000条，避免一次取出消耗太多内存
+     */
     private static final int ONE_TIME_SIZE = 1000;
 
     @Override
-    // 每天半夜1点钟开始执行任务
-//    @Scheduled(cron = "0 0 1 * * ?")
-    // 下面是用于测试的配置，每分钟执行一次任务
+    //
+    /**
+     * 每天半夜1点钟开始执行任务
+     */
+    // @Scheduled(cron = "0 0 1 * * ?")
+
+    /**
+     * 每分钟执行一次任务
+     */
     @Scheduled(fixedRate = 1000 * 60)
     public void purchaseTask() {
         System.out.println("定时任务开始......");
-        Set<String> productIdList
-                = stringRedisTemplate.opsForSet().members(PRODUCT_SCHEDULE_SET);
+        Set<String> productIdList = stringRedisTemplate.opsForSet().members(PRODUCT_SCHEDULE_SET);
         List<PurchaseRecordPo> prpList =new ArrayList<>();
         for (String productIdStr : productIdList) {
             Long productId = Long.parseLong(productIdStr);
             String purchaseKey = PURCHASE_PRODUCT_LIST + productId;
-            BoundListOperations<String, String> ops
-                    = stringRedisTemplate.boundListOps(purchaseKey);
+            BoundListOperations<String, String> ops = stringRedisTemplate.boundListOps(purchaseKey);
             // 计算记录数
             long size = stringRedisTemplate.opsForList().size(purchaseKey);
             Long times = size % ONE_TIME_SIZE == 0 ?
@@ -48,15 +62,12 @@ public class TaskServiceImpl implements TaskService {
                 // 获取至多TIME_SIZE个抢红包信息
                 List<String> prList = null;
                 if (i == 0) {
-                    prList  = ops.range(i * ONE_TIME_SIZE,
-                            (i + 1) * ONE_TIME_SIZE);
+                    prList  = ops.range(i * ONE_TIME_SIZE, (i + 1) * ONE_TIME_SIZE);
                 } else {
-                    prList = ops.range(i * ONE_TIME_SIZE + 1,
-                            (i + 1) * ONE_TIME_SIZE);
+                    prList = ops.range(i * ONE_TIME_SIZE + 1, (i + 1) * ONE_TIME_SIZE);
                 }
                 for (String prStr : prList) {
-                    PurchaseRecordPo prp
-                            = this.createPurchaseRecord(productId, prStr);
+                    PurchaseRecordPo prp = this.createPurchaseRecord(productId, prStr);
                     prpList.add(prp);
                 }
                 try {
@@ -71,14 +82,12 @@ public class TaskServiceImpl implements TaskService {
             // 删除购买列表
             stringRedisTemplate.delete(purchaseKey);
             // 从商品集合中删除商品
-            stringRedisTemplate.opsForSet()
-                    .remove(PRODUCT_SCHEDULE_SET, productIdStr);
+            stringRedisTemplate.opsForSet().remove(PRODUCT_SCHEDULE_SET, productIdStr);
         }
         System.out.println("定时任务结束......");
     }
 
-    private PurchaseRecordPo createPurchaseRecord(
-            Long productId, String prStr) {
+    private PurchaseRecordPo createPurchaseRecord(Long productId, String prStr) {
         String[] arr = prStr.split(",");
         Long userId = Long.parseLong(arr[0]);
         int quantity = Integer.parseInt(arr[1]);
