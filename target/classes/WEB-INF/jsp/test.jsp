@@ -13,7 +13,6 @@
     <script type="text/javascript"
             src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 </head>
-<!--后面需要改写这段JavaScript脚本进行测试-->
 <script type="text/javascript">
         // var params = {
         //     userId : 1,

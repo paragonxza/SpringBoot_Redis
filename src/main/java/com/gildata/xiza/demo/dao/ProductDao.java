@@ -20,7 +20,7 @@ public interface ProductDao {
      * @param quantity 购买数量
      * @return int
      */
-    //public int decreaseProduct(@Param("id") Long id, @Param("quantity") int quantity);
+    public int decreaseProduct(@Param("id") Long id, @Param("quantity") int quantity);
 
     /**
      * 减库存，param标明的mybatis参数传递给后台，采用cas
@@ -29,5 +29,5 @@ public interface ProductDao {
      * @param version 版本号 实现CAS关键
      * @return int
      */
-    public int decreaseProduct(@Param("id") Long id, @Param("quantity") int quantity, @Param("version") int version);
+//    public int decreaseProduct(@Param("id") Long id, @Param("quantity") int quantity, @Param("version") int version);
 }

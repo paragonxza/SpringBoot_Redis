@@ -17,4 +17,7 @@ public interface PurchaseService {
      */
     public boolean purchase(Long userId, Long productId, int quantity);
 
+    boolean purchaseRedis(Long userId, Long productId, int quantity);
+
+    boolean dealRedisPurchase(List<PurchaseRecordPo> prpList);
 }
