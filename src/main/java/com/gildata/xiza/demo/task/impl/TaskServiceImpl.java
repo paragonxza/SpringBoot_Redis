@@ -53,14 +53,12 @@ public class TaskServiceImpl implements TaskService {
             long size = stringRedisTemplate.opsForList().size(purchaseKey);
             Long times = size % ONE_TIME_SIZE == 0 ?
                     size / ONE_TIME_SIZE : size / ONE_TIME_SIZE + 1;
-            for (int i = 0; i < times; i++) {
+            int i = 0;
+            do{
                 // 获取至多TIME_SIZE个抢红包信息
-                List<String> prList = null;
-                if (i == 0) {
-                    prList  = ops.range(i * ONE_TIME_SIZE, (i + 1) * ONE_TIME_SIZE);
-                } else {
-                    prList = ops.range(i * ONE_TIME_SIZE + 1, (i + 1) * ONE_TIME_SIZE);
-                }
+                List<String> prList =
+                        (i == 0)? ops.range(i * ONE_TIME_SIZE, (i + 1) * ONE_TIME_SIZE):
+                        ops.range(i * ONE_TIME_SIZE + 1, (i + 1) * ONE_TIME_SIZE);
                 for (String prStr : prList) {
                     PurchaseRecordPo prp = this.createPurchaseRecord(productId, prStr);
                     prpList.add(prp);
@@ -73,7 +71,9 @@ public class TaskServiceImpl implements TaskService {
                 }
                 // 清除列表为空，等待重新写入数据
                 prpList.clear();
-            }
+                i++;
+            }while(i < times);
+
             // 删除购买列表
             stringRedisTemplate.delete(purchaseKey);
             // 从商品集合中删除商品

@@ -48,7 +48,13 @@ public class PurchaseController {
     @AllArgsConstructor
     @Data
     class Result{
+        /**
+         * 购买商品是否成功，默认为false
+         */
         private boolean success = false;
+        /**
+         * 购买商品时返回状态信息，默认为null，接受success相应的状态信息
+         */
         private String message = null;
     }
 }

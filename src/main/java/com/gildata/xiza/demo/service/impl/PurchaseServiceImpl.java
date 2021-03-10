@@ -131,8 +131,13 @@ public class PurchaseServiceImpl implements PurchaseService {
             Object res = jedis.evalsha(sha1, 2, PRODUCT_SCHEDULE_SET,
                     PURCHASE_PRODUCT_LIST, userId + "", productId + "",
                     quantity + "", purchaseDate + "");
-            Long result = (Long) res;
-            return result == 1;
+            //res 判空操作
+            if (res == null){
+                return false;
+            }else {
+                Long result = (Long) res;
+                return result == 1;
+            }
         } finally {
             //关闭jedis连接
             if (jedis != null && jedis.isConnected()) {
@@ -162,10 +167,18 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public boolean dealRedisPurchase(List<PurchaseRecordPo> prpList) {
-        for (PurchaseRecordPo prp : prpList) {
-            purchaseRecordDao.insertPurchaseRecord(prp);
-            productDao.decreaseProduct(prp.getProductId(), prp.getQuantity());
+        /**
+         * 添加try - catch块捕捉异常
+         */
+        boolean b = true;
+        try {
+            for (PurchaseRecordPo prp : prpList) {
+                purchaseRecordDao.insertPurchaseRecord(prp);
+                productDao.decreaseProduct(prp.getProductId(), prp.getQuantity());
+            }
+        } catch(Exception ex) {
+            b = false;
         }
-        return true;
+        return b;
     }
 }
